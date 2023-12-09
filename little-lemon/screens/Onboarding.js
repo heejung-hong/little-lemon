@@ -4,7 +4,7 @@ import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-nativ
 
 
 
-export default function Onboarding() {
+export default function Onboarding({ navigation }) {
   // declare the variables
   const [firstName, onChangeFirstName] = useState('');
   const [email, onChangeEmail] = useState('');
@@ -37,7 +37,7 @@ export default function Onboarding() {
         />
       </View>
       <View style={styles.footer}>
-        <Pressable
+        <Pressable onPress={() => navigation.navigate('Home')}
           style={styles.button}
         >
           <Text style={styles.buttonText}>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 50
   },
   main: {
-    flex: 0.6,
+    flex: 0.4,
     backgroundColor: '#c4ccd3',
     alignItems: 'center',
   },
