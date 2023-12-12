@@ -10,7 +10,7 @@ export default function Onboarding({ navigation }) {
   const [email, onChangeEmail] = useState('');
 
   return (
-    <View>
+    <View style={styles.main}>
       <View style={styles.header}>
         <Image 
           style={styles.logo} 
@@ -19,7 +19,7 @@ export default function Onboarding({ navigation }) {
           accessibilityLabel={'Little Lemon logo and title'}
         />
       </View>
-      <View style={styles.main}>
+      <View style={styles.body}>
         <Text style={styles.headerText}>Let us get to know you</Text>
         <Text style={styles.regularText}>First Name</Text>
         <TextInput
@@ -50,6 +50,9 @@ export default function Onboarding({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  main: {
+    flex: 1,
+  },
   header: {
     flex: 0.2,
     backgroundColor: '#d9dfe5',
@@ -59,20 +62,18 @@ const styles = StyleSheet.create({
   logo: {
     height: 100,
     width: 300,
-    resizeMode: 'contain',
-    marginTop: 35,
-    marginHorizontal: 50
+    resizeMode: 'contain'
   },
-  main: {
-    flex: 0.4,
+  body: {
+    flex: 0.6,
     backgroundColor: '#c4ccd3',
     alignItems: 'center',
   },
   headerText: {
     padding: 40,
     fontSize: 25,
-    marginTop: 30,
-    marginBottom: 70,
+    marginTop: 20,
+    marginBottom: 30,
     color: '#495E57',
     textAlign: 'center',
   },
