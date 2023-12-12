@@ -21,8 +21,6 @@ const styles = StyleSheet.create({
   headerText: {
     padding: 40,
     fontSize: 25,
-    marginTop: 30,
-    marginBottom: 70,
     color: '#495E57',
     textAlign: 'center',
   }

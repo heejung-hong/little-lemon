@@ -3,28 +3,19 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Onboarding from './screens/Onboarding'
-import HomeScreen from './screens/HomeScreen';
+import HomeScreen from './screens/HomeScreen'
 
 // Instantiate stack
 const Stack = createNativeStackNavigator();
 
-export default function App() {
 
-  if (state.isLoading) {
-    // If the reading from AsyncStorage haven't been read yet.
-    return <SplashScreen />
-  }
+export default function App() {
 
   return (
     <NavigationContainer>      
-      <Stack.Navigator initialRouteName='Onboarding'>
-        {state.isOnboardingCompleted ? (
-          // Onboarding completed, user is signed in
-          <Stack.Screen name='Home' component={HomeScreen} />
-        ) : (
-          // If user is NOT signed in
-          <Stack.Screen name='Welcome' component={Onboarding} />
-        )}        
+      <Stack.Navigator>
+        <Stack.Screen name='Welcome' component={Onboarding} />
+        <Stack.Screen name='Home' component={HomeScreen} />      
       </Stack.Navigator>            
     </NavigationContainer>
   );
