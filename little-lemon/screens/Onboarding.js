@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-
-
+import { validateName, validateEmail } from '../utils';
 
 export default function Onboarding({ navigation }) {
   // declare the variables
   const [firstName, onChangeFirstName] = useState('');
   const [email, onChangeEmail] = useState('');
+
+  const isNameValid = validateName(firstName);
+  const isEmailValid = validateEmail(email);
 
   return (
     <View style={styles.main}>
@@ -25,19 +27,23 @@ export default function Onboarding({ navigation }) {
         <TextInput
           style={styles.input} 
           onChangeText={onChangeFirstName}
-          placeholder='first name'
+          placeholder='Enter your first name'
           value={firstName}
         />
         <Text style={styles.regularText}>Email</Text>
         <TextInput
           style={styles.input}
           onChangeText={onChangeEmail}
-          placeholder='email'
+          placeholder='Enter your email'
           value={email}
+          keyboardType='email-address'
+          textContentType='emailAddress'
         />
       </View>
       <View style={styles.footer}>
-        <Pressable onPress={() => navigation.navigate('Home')}
+        <Pressable 
+          onPress={() => navigation.navigate('Home')}
+          disabled={!isEmailValid || !isNameValid}
           style={styles.button}
         >
           <Text style={styles.buttonText}>
