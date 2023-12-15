@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import Button from '../components/Button';
 import { validateName, validateEmail } from '../utils';
 
 export default function Onboarding({ navigation }) {
@@ -41,7 +42,7 @@ export default function Onboarding({ navigation }) {
         />
       </View>
       <View style={styles.footer}>
-        <Pressable 
+        <Button 
           onPress={() => navigation.navigate('Home')}
           disabled={!isEmailValid || !isNameValid}
           style={styles.button}
@@ -49,7 +50,7 @@ export default function Onboarding({ navigation }) {
           <Text style={styles.buttonText}>
             Next
           </Text>
-        </Pressable>
+        </Button>
       </View>
     </View>
   )
