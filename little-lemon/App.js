@@ -16,7 +16,7 @@ export default function App() {
   return (
     <NavigationContainer>      
       <Stack.Navigator>
-        <Stack.Screen name='Welcome' component={Onboarding} />
+        {/* <Stack.Screen name='Welcome' component={Onboarding} /> */}
         <Stack.Screen name='Home' component={HomeScreen} />      
       </Stack.Navigator>            
     </NavigationContainer>
