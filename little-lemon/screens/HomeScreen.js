@@ -11,7 +11,7 @@ export default function HomeScreen() {
       // fetch method are Get requests
       // in React Native, fetch can make POST request to send data to server
       const response = await fetch(
-        'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json'
+        'https://raw.githubusercontent.com/heejung-hong/little-lemon/main/little-lemon/menu.json'
       );
       const json = await response.json();
       setData(json.menu);
@@ -53,7 +53,7 @@ export default function HomeScreen() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View>
-                <Text>{item.title}</Text>
+                <Text>{item.name}</Text>
                 <Text>{item.description}</Text>
                 <Text>{'$' + item.price}</Text>
                 <Image source={{ uri: item.imageUrl }} style={{ width: 100, height: 100 }} />
