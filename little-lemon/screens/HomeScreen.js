@@ -56,7 +56,7 @@ export default function HomeScreen() {
                 <Text>{item.name}</Text>
                 <Text>{item.description}</Text>
                 <Text>{'$' + item.price}</Text>
-                <Image source={{ uri: item.imageUrl }} style={{ width: 100, height: 100 }} />
+                <Image source={{ uri: item.image }} style={{ width: 100, height: 100 }} />
               </View>
             )}
           />
