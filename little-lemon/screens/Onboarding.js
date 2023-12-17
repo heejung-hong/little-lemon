@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Button from '../components/Button';
 import { validateName, validateEmail } from '../utils';
 
-export default function Onboarding({ navigation }) {
+export default function Onboarding({ navigation, route }) {
   // declare the variables
   const [firstName, onChangeFirstName] = useState('');
   const [email, onChangeEmail] = useState('');
@@ -12,8 +12,10 @@ export default function Onboarding({ navigation }) {
   const isNameValid = validateName(firstName);
   const isEmailValid = validateEmail(email);
 
+  const { setUserToken } = route.params;
+
   return (
-    <View style={styles.container}>      
+    <SafeAreaView style={styles.container}>      
       <Image 
         style={styles.logo} 
         source={require('../assets/Logo.png')}
@@ -38,15 +40,15 @@ export default function Onboarding({ navigation }) {
         textContentType='emailAddress'
       />      
       <Button 
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => setUserToken('token')}
         disabled={!isEmailValid || !isNameValid}
-        style={styles.button}
+        style={styles.button}        
       >
         <Text style={styles.buttonText}>
           Next
         </Text>
       </Button>     
-    </View>
+    </SafeAreaView>
   )
 }
 

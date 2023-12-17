@@ -1,8 +1,9 @@
 import * as React from 'react';
+import SearchBar from 'react-native-search-bar';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation, route }) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
@@ -15,6 +16,7 @@ export default function HomeScreen() {
       );
       const json = await response.json();
       setData(json.menu);
+      console.log(setData)
     } catch (error) {
       console.error(error);
     } finally {
@@ -27,9 +29,15 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={{ backgroundColor: '#2F4F4F' }}>
-        <Text style={styles.headerText}>Little Lemon</Text>
+        <Pressable 
+          onPress={() => navigation.navigate('Profile')}
+        >
+        <Text         
+        style={styles.headerText}>Little Lemon
+        </Text>
+        </Pressable>
         <View style={{ flexDirection: 'row' }}>
           <View>
             <Text style={styles.chicago}>Chicago</Text>
@@ -81,7 +89,7 @@ export default function HomeScreen() {
           />
         )}
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 

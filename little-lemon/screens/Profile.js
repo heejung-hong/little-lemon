@@ -1,22 +1,48 @@
 import * as React from 'react';
+import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import Checkbox from 'expo-checkbox';
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { MaskedTextInput } from 'react-native-mask-text';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Profile() {
+
+export default function Profile({ navigation, route }) {
   const [isOrder, setOrder] = useState(false);
   const [isChanges, setChanges] = useState(false);
   const [isSpecial, setSpecial] = useState(false);
   const [isNewsletter, setNewsletter] = useState(false);
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    })
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View>
         <Text style={styles.headerText}>Personal information</Text>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
-        <View style={{ width: 65, height: 65, borderRadius: 50, borderColor: '#2F4F4F', borderWidth: 1 }}></View>
+        <View style={{ width: 65, height: 65, borderRadius: 50, borderColor: '#2F4F4F', borderWidth: 1 }}>
+          <Button 
+            title='Pic'
+            onPress={pickImage}
+          />
+          {image && <Image source={{ uri: image}} style={{ width: 65, height: 65 }} />}
+        </View>
         <Pressable style={styles.changeBtn}>
           <Text style={styles.greenBtnText}>Change</Text>
         </Pressable>
@@ -41,9 +67,14 @@ export default function Profile() {
           placeholder='Enter your email'
         />
         <Text style={styles.text}>Phone number</Text>
-        <TextInput
+        <MaskedTextInput
           style={styles.inputBox} 
           placeholder='Enter your phone number'
+          mask="SSS-SSS-SSSS"
+          onChangeText={(text, rawText) => {
+            console.log(text);
+            console.log(rawText);
+          }}
         />
       </View>
       <View>
@@ -82,7 +113,10 @@ export default function Profile() {
         <Text style={styles.text}>Newsletter</Text>
       </View>
       <View style={{ alignItems: 'center', justifyContent: 'space-evenly', margin: 10 }}>
-        <Pressable style={styles.logOutBtn}>
+        <Pressable 
+          style={styles.logOutBtn}
+          
+        >
           <Text style={styles.yellowBtnText}>Log out</Text>
         </Pressable>
       </View>
@@ -90,11 +124,14 @@ export default function Profile() {
         <Pressable style={styles.discardBtn}>
           <Text style={styles.whiteBtnText}>Discard changes</Text>
         </Pressable>
-        <Pressable style={styles.saveBtn}>
+        <Pressable 
+          onPress={() => navigation.navigate('Home')}
+          style={styles.saveBtn}
+        >
           <Text style={styles.greenBtnText}>Save changes</Text>
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
