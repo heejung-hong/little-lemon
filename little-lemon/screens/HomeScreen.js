@@ -1,5 +1,5 @@
 import * as React from 'react';
-import SearchBar from 'react-native-search-bar';
+// import SearchBar from 'react-native-search-bar';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
