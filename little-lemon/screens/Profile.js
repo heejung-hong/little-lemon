@@ -1,17 +1,13 @@
 import * as React from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
-import Checkbox from 'expo-checkbox';
+import { useEffect, useState } from 'react';
 import { Button, Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { MaskedTextInput } from 'react-native-mask-text';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Onboarding from './Onboarding';
+import Notifications from '../components/Notifications'
 
-
-export default function Profile({ navigation, route }) {
-  const [isOrder, setOrder] = useState(false);
-  const [isChanges, setChanges] = useState(false);
-  const [isSpecial, setSpecial] = useState(false);
-  const [isNewsletter, setNewsletter] = useState(false);
+export default function Profile({ navigation, route, inputFirstName }) {  
   const [image, setImage] = useState(null);
 
   const pickImage = async () => {
@@ -29,6 +25,51 @@ export default function Profile({ navigation, route }) {
       setImage(result.assets[0].uri);
     }
   }
+
+
+
+  const [lastNameInput, setLastNameInput] = useState('');
+  const [userLastName, setUserLastName] = useState([]);
+
+  useEffect(() => {
+    // Populating userInfo from storage using AsyncStorage.multiGet
+    (async () => {
+      try {
+        const userLastName = await AsyncStorage.getItem('userLastName');
+        setUserLastName(userLastName === null ? [] : JSON.parse(userLastName));
+      } catch (e) {}
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await AsyncStorage.setItem('userLastName', JSON.stringify(userLastName));
+      } catch (e) {}
+    })();
+  }, [userLastName]);
+
+
+
+  const [phoneNumInput, setPhoneNumInput] = useState('');
+  const [userPhoneNum, setUserPhoneNum] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const userPhoneNum = await AsyncStorage.getItem('userPhoneNum');
+        setUserPhoneNum(userPhoneNum === null ? [] : JSON.parse(userPhoneNum));
+      } catch (e) {}
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await AsyncStorage.setItem('userPhoneNum', JSON.stringify(userPhoneNum));
+      } catch (e) {}
+    })();
+  }, [userPhoneNum]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -52,66 +93,52 @@ export default function Profile({ navigation, route }) {
       </View>
       <View>
         <Text style={styles.text}>First name</Text>
-        <TextInput
-          style={styles.inputBox} 
-          placeholder='Enter your first name'
-        />
+        <View
+          style={styles.inputBox}          
+        >
+          {/* {inputFirstName.map((inputFirstName) => (
+          <Text>{inputFirstName}</Text>
+          ))} */}
+        </View>
         <Text style={styles.text}>Last name</Text>
         <TextInput
           style={styles.inputBox} 
           placeholder='Enter your last name'
+          value={lastNameInput}
+          onChangeText={
+            (data) => setLastNameInput(data)                      
+          }          
         />
+        {userLastName.map((userLastName) => (
+              <Text>{userLastName}</Text>
+            ))}        
         <Text style={styles.text}>Email</Text>
         <TextInput
           style={styles.inputBox} 
           placeholder='Enter your email'
         />
-        <Text style={styles.text}>Phone number</Text>
+        <Text style={styles.text}>Phone number</Text> 
         <MaskedTextInput
           style={styles.inputBox} 
           placeholder='Enter your phone number'
           mask="SSS-SSS-SSSS"
-          onChangeText={(text, rawText) => {
-            console.log(text);
-            console.log(rawText);
+          onChangeText={() => {
+            (text, rawText) => {
+              console.log(text);
+              console.log(rawText);
+            };
+            (data) => setPhoneNumInput(data);            
           }}
+          value={phoneNumInput}
         />
+        {userPhoneNum.map((userPhoneNum) => (
+              <Text>{userPhoneNum}</Text>
+            ))}
       </View>
       <View>
         <Text style={styles.headerText}>Email notifications</Text>
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 25 }}>
-        <Checkbox 
-          value={isOrder}
-          onValueChange={setOrder}
-          color={isOrder ? '#2F4F4F' : undefined }
-        />
-        <Text style={styles.text}>Order statuses</Text>
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 25 }}>
-        <Checkbox 
-          value={isChanges}
-          onValueChange={setChanges}
-          color={isChanges ? '#2F4F4F' : undefined }
-        />
-        <Text style={styles.text}>Password changes</Text>
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 25 }}>
-        <Checkbox 
-          value={isSpecial}
-          onValueChange={setSpecial}
-          color={isSpecial ? '#2F4F4F' : undefined }
-        />
-        <Text style={styles.text}>Special offers</Text>
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 25 }}>
-        <Checkbox 
-          value={isNewsletter}
-          onValueChange={setNewsletter}
-          color={isNewsletter ? '#2F4F4F' : undefined }
-        />
-        <Text style={styles.text}>Newsletter</Text>
-      </View>
+      <Notifications />
       <View style={{ alignItems: 'center', justifyContent: 'space-evenly', margin: 10 }}>
         <Pressable 
           style={styles.logOutBtn}
@@ -125,7 +152,12 @@ export default function Profile({ navigation, route }) {
           <Text style={styles.whiteBtnText}>Discard changes</Text>
         </Pressable>
         <Pressable 
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => {
+            setUserLastName([...userLastName, lastNameInput]);
+            setLastNameInput('');
+            setUserPhoneNum([...userPhoneNum, phoneNumInput]);
+            setPhoneNumInput('');
+          }}
           style={styles.saveBtn}
         >
           <Text style={styles.greenBtnText}>Save changes</Text>

@@ -1,18 +1,38 @@
 import * as React from 'react';
-import { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 import { Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Button from '../components/Button';
 import { validateName, validateEmail } from '../utils';
+import Profile from './Profile';
 
-export default function Onboarding({ navigation, route }) {
+export default function Onboarding({ navigation, route, props }) {
   // declare the variables
   const [firstName, onChangeFirstName] = useState('');
   const [email, onChangeEmail] = useState('');
+  const [inputFirstName, setInputFirstName] = useState([]);
 
   const isNameValid = validateName(firstName);
   const isEmailValid = validateEmail(email);
 
   const { setUserToken } = route.params;
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const inputFirstName = await AsyncStorage.getItem('inputFirstName');
+        setInputFirstName(inputFirstName === null ? [] : JSON.parse(inputFirstName));
+      } catch (e) {}
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await AsyncStorage.setItem('inputFirstName', JSON.stringify(inputFirstName));
+      } catch (e) {}
+    })();
+  }, [inputFirstName]);
 
   return (
     <SafeAreaView style={styles.container}>      
@@ -26,7 +46,7 @@ export default function Onboarding({ navigation, route }) {
       <Text style={styles.regularText}>First Name</Text>
       <TextInput
         style={styles.input} 
-        onChangeText={onChangeFirstName}
+        onChangeText={(data) => onChangeFirstName(data)}
         placeholder='Enter your first name'
         value={firstName}
       />
@@ -40,7 +60,11 @@ export default function Onboarding({ navigation, route }) {
         textContentType='emailAddress'
       />      
       <Button 
-        onPress={() => setUserToken('token')}
+        onPress={() => {
+          setUserToken('token');
+          setInputFirstName([...inputFirstName, firstName]);
+          onChangeFirstName('');
+        }}
         disabled={!isEmailValid || !isNameValid}
         style={styles.button}        
       >
