@@ -1,5 +1,4 @@
 import * as SQLite from 'expo-sqlite';
-import { SECTION_LIST_MOCK_DATA } from './utils';
 
 const db = SQLite.openDatabase('little_lemon');
 
@@ -8,7 +7,7 @@ export async function createTable() {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);'
+          'create table if not exists menuitems (id integer primary key not null, uuid text, name text, price text, category text);'
         );
       },
       reject,
@@ -32,10 +31,18 @@ export function saveMenuItems(menuItems) {
     // 2. Implement a single SQL statement to save all menu data in a table called menuitems.
     // Check the createTable() function above to see all the different columns the table has
     // Hint: You need a SQL statement to insert multiple rows at once.
+    tx.executeSql(
+      `INSERT INTO menuitems (uuid, name, price, category) VALUES ${menuItems
+        .map(
+          (item) =>
+            `('${item.id}', '${item.name}', '${item.price}', '${item.category}')`
+        )
+        .join(', ')}`
+    );
   });
 }
 
-/**
+/*
  * 4. Implement a transaction that executes a SQL statement to filter the menu by 2 criteria:
  * a query string and a list of categories.
  *
@@ -57,6 +64,30 @@ export function saveMenuItems(menuItems) {
  */
 export async function filterByQueryAndCategories(query, activeCategories) {
   return new Promise((resolve, reject) => {
-    resolve(SECTION_LIST_MOCK_DATA);
+    if (!query) {
+      db.transaction((tx) => {
+        tx.executeSql(
+          `select * from menuitems where ${activeCategories
+            .map((category) => `category='${category}'`)
+            .join(' or ')}`,
+          [],
+          (_, { rows }) => {
+            resolve(rows._array);
+          }
+        );
+      }, reject);
+    } else {
+      db.transaction((tx) => {
+        tx.executeSql(
+          `select * from menuitems where (title like '%${query}%') and (${activeCategories
+            .map((category) => `category='${category}'`)
+            .join(' or ')})`,
+          [],
+          (_, { rows }) => {
+            resolve(rows._array);
+          }
+        );
+      }, reject);
+    }
   });
 }

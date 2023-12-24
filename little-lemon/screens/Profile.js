@@ -72,7 +72,7 @@ export default function Profile({ navigation }) {
   }, [userPhoneNum]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View>
         <Text style={styles.headerText}>Personal information</Text>
       </View>
@@ -159,7 +159,7 @@ export default function Profile({ navigation }) {
           <Text style={styles.greenBtnText}>Save changes</Text>
         </Pressable>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 
