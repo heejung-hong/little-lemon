@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as SQLite from 'expo-sqlite';
 import Onboarding from './screens/Onboarding'
 import HomeScreen from './screens/HomeScreen'
 import Profile from './screens/Profile';
@@ -26,8 +25,8 @@ const getIsSignedIn = () => {
 };
 
 export default function App({ navigation }) {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [userToken, setUserToken] = React.useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userToken, setUserToken] = useState(null);
   const isSignedIn = getIsSignedIn();
 
   const getUserToken = async () => {
@@ -43,7 +42,7 @@ export default function App({ navigation }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getUserToken();
   }, []);
 
@@ -67,10 +66,12 @@ export default function App({ navigation }) {
           </>
         ) : (
           <>
-            <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />        
+            <Stack.Group>
+            <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
-          </>
-        )}        
+            </Stack.Group>                    
+          </>          
+        )}              
       </Stack.Navigator>
     </NavigationContainer>
   );

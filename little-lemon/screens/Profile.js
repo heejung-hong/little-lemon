@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Onboarding from './Onboarding';
 import Notifications from '../components/Notifications'
 
-export default function Profile({ navigation, route, inputFirstName }) {  
+export default function Profile({ navigation }) {  
   const [image, setImage] = useState(null);
 
   const pickImage = async () => {
@@ -122,13 +122,11 @@ export default function Profile({ navigation, route, inputFirstName }) {
           style={styles.inputBox} 
           placeholder='Enter your phone number'
           mask="SSS-SSS-SSSS"
-          onChangeText={() => {
+          onChangeText={
             (text, rawText) => {
               console.log(text);
               console.log(rawText);
-            };
-            (data) => setPhoneNumInput(data);            
-          }}
+            }}
           value={phoneNumInput}
         />
         {userPhoneNum.map((userPhoneNum) => (
@@ -142,9 +140,9 @@ export default function Profile({ navigation, route, inputFirstName }) {
       <View style={{ alignItems: 'center', justifyContent: 'space-evenly', margin: 10 }}>
         <Pressable 
           style={styles.logOutBtn}
-          
+          onPress={() => navigation.navigate('Home')} 
         >
-          <Text style={styles.yellowBtnText}>Log out</Text>
+          <Text style={styles.yellowBtnText}>Home</Text>
         </Pressable>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', margin: 5 }}>
@@ -155,8 +153,6 @@ export default function Profile({ navigation, route, inputFirstName }) {
           onPress={() => {
             setUserLastName([...userLastName, lastNameInput]);
             setLastNameInput('');
-            setUserPhoneNum([...userPhoneNum, phoneNumInput]);
-            setPhoneNumInput('');
           }}
           style={styles.saveBtn}
         >
