@@ -1,9 +1,13 @@
 import * as React from 'react';
-// import SearchBar from 'react-native-search-bar';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import { ActivityIndicator, Alert, FlatList, Image, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Searchbar } from 'react-native-paper';
+import debounce from 'lodash.debounce';
+import { createTable, getMenuItems, saveMenuItems, filterByQueryAndCategories } from '../database';
+import Filters from '../components/Filters';
+import { getSectionListData, useUpdateEffect } from '../utils/utils';
 
-export default function HomeScreen({ navigation, route }) {
+export default function HomeScreen({ navigation }) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
@@ -28,16 +32,87 @@ export default function HomeScreen({ navigation, route }) {
     getMenu();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        await createTable();
+        let menuItems = await getMenuItems();
+
+        // The application only fetches the menu data once from a remote URL
+        // and then stores it into a SQLite database.
+        // After that, every application restart loads the menu from the database
+        if (!menuItems.length) {
+          const menuItems = await fetchData();
+          saveMenuItems(menuItems);
+        }
+
+        const sectionListData = getSectionListData(menuItems);
+        setData(sectionListData);
+      } catch (e) {
+        // Handle error
+        Alert.alert(e.message);
+      }
+    })();
+  }, []);
+
+  useUpdateEffect(() => {
+    (async () => {
+      const activeCategories = sections.filter((s, i) => {
+        // If all filters are deselected, all categories are active
+        if (filterSelections.every((item) => item === false)) {
+          return true;
+        }
+        return filterSelections[i];
+      });
+      try {
+        const menuItems = await filterByQueryAndCategories(
+          query,
+          activeCategories
+        );
+        const sectionListData = getSectionListData(menuItems);
+        setData(sectionListData);
+      } catch (e) {
+        Alert.alert(e.message);
+      }
+    })();
+  }, [filterSelections, query]);
+
+  const lookup = useCallback((q) => {
+    setQuery(q);
+  }, []);
+
+  const debouncedLookup = useMemo(() => debounce(lookup, 500), [lookup]);
+
+  const handleSearchChange = (text) => {
+    setSearchBarText(text);
+    debouncedLookup(text);
+  };
+
+  const handleFiltersChange = async (index) => {
+    const arrayCopy = [...filterSelections];
+    arrayCopy[index] = !filterSelections[index];
+    setFilterSelections(arrayCopy);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <View style={{flexDirection: 'row'}}>
+        <Image 
+          style={styles.logo} 
+          source={require('../assets/Logo.png')}
+          accessible={true}
+          accessibilityLabel={'Little Lemon logo and title'}
+        />
+        <Pressable onPress={() => navigation.navigate('Profile')} >
+        <View style={{ width: 65, height: 65, borderRadius: 50, borderColor: '#2F4F4F', borderWidth: 1, justifyContent: 'flex-end' }}>
+        <Text>Profile</Text>
+        </View>
+        </Pressable>
+      </View>      
       <View style={{ backgroundColor: '#2F4F4F' }}>
-        <Pressable 
-          onPress={() => navigation.navigate('Profile')}
-        >
         <Text         
         style={styles.headerText}>Little Lemon
         </Text>
-        </Pressable>
         <View style={{ flexDirection: 'row' }}>
           <View>
             <Text style={styles.chicago}>Chicago</Text>
@@ -48,6 +123,23 @@ export default function HomeScreen({ navigation, route }) {
           <View>
             <Image source={require('../assets/HeroImage.png')} style={styles.hero} />
           </View>
+        </View>
+        <View>
+          <Searchbar
+            placeholder="Search"
+            placeholderTextColor="white"
+            onChangeText={handleSearchChange}
+            value={searchBarText}
+            style={styles.searchBar}
+            iconColor="white"
+            inputStyle={{ color: 'white' }}
+            elevation={0}
+          />
+          <Filters
+            selections={filterSelections}
+            onChange={handleFiltersChange}
+            sections={sections}
+          />
         </View>
       </View>
       <View>
@@ -97,6 +189,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+  logo: {
+    height: 100,
+    width: 200,
+    resizeMode: 'contain',
+    justifyContent: 'center'
+  },
   headerText: {
     fontSize: 45,
     fontWeight: 'bold',
@@ -120,6 +218,12 @@ const styles = StyleSheet.create({
     height: 150, 
     borderRadius: 25, 
     margin: 7
+  },
+  searchBar: {
+    marginBottom: 24,
+    backgroundColor: '#495E57',
+    shadowRadius: 0,
+    shadowOpacity: 0,
   },
   delivery: {
     color: 'black', 
