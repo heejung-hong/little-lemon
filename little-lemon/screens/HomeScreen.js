@@ -24,8 +24,21 @@ import {
 import Filters from '../components/Filters';
 import { getSectionListData, useUpdateEffect } from '../utils/utils';
 
-const API_URL = 'https://raw.githubusercontent.com/heejung-hong/little-lemon/main/little-lemon/menu.json';
+const API_URL = 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
 const sections = ['Starters', 'Main', 'Deserts']
+
+const Item = ({ name, price, description, image }) => (
+  <View style={styles.item}>
+    <Text style={styles.title}>{name}</Text>
+    <Text style={styles.title}>{description}</Text>
+    <Text style={styles.title}>${price}</Text>
+    <Image 
+      source={{
+        uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`,
+      }}
+    />
+  </View>
+);
 
 export default function HomeScreen({ navigation }) {
   // const [isLoading, setLoading] = useState(true);
@@ -155,6 +168,18 @@ export default function HomeScreen({ navigation }) {
         </View>          
       </View>
       <View>
+        <Searchbar
+          placeholder="Search"
+          placeholderTextColor="white"
+          onChangeText={handleSearchChange}
+          value={searchBarText}
+          style={styles.searchBar}
+          iconColor="white"
+          inputStyle={{ color: 'white' }}
+          elevation={0}
+        />
+      </View>
+      <View>
         <Text style={styles.delivery}>ORDER FOR DELIVERY!</Text>
       </View>
       <View style={styles.category}>
@@ -171,34 +196,29 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.categoryText}>Drinks</Text>
         </Pressable>
       </View>
-      <View>
-          <Searchbar
-            placeholder="Search"
-            placeholderTextColor="white"
-            onChangeText={handleSearchChange}
-            value={searchBarText}
-            style={styles.searchBar}
-            iconColor="white"
-            inputStyle={{ color: 'white' }}
-            elevation={0}
-          />
-          <Filters
-            selections={filterSelections}
-            onChange={handleFiltersChange}
-            sections={sections}
-          />
-          <SectionList
-            style={styles.sectionList}
-            sections={data}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <Item title={item.title} price={item.price} />
-            )}
-            renderSectionHeader={({ section: { title } }) => (
-              <Text style={styles.header}>{title}</Text>
-            )}
-          />
-        </View>
+      <View>       
+        <Filters
+          selections={filterSelections}
+          onChange={handleFiltersChange}
+          sections={sections}
+        />
+        <SectionList
+          style={styles.sectionList}
+          sections={data}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Item 
+              name={item.name} 
+              price={item.price}
+              description={item.description}
+              image={item.image} 
+            />
+          )}
+          renderSectionHeader={({ section: { name } }) => (
+            <Text style={styles.header}>{name}</Text>
+          )}
+        />
+      </View>
       {/* <View>
         {isLoading ? (
           <ActivityIndicator />

@@ -7,7 +7,7 @@ export async function createTable() {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          'create table if not exists menuitems (id integer primary key not null, uuid text, name text, price text, category text);'
+          'create table if not exists menuitems (id integer primary key not null, uuid text, name text, price text, description text, image text, category text);'
         );
       },
       reject,
@@ -26,16 +26,16 @@ export async function getMenuItems() {
   });
 }
 
+// 2. Implement a single SQL statement to save all menu data in a table called menuitems.
+// Check the createTable() function above to see all the different columns the table has
+// Hint: You need a SQL statement to insert multiple rows at once.
 export function saveMenuItems(menuItems) {
   db.transaction((tx) => {
-    // 2. Implement a single SQL statement to save all menu data in a table called menuitems.
-    // Check the createTable() function above to see all the different columns the table has
-    // Hint: You need a SQL statement to insert multiple rows at once.
     tx.executeSql(
-      `INSERT INTO menuitems (uuid, name, price, category) VALUES ${menuItems
+      `insert into menuitems (uuid, name, price, description, image, category) values ${menuItems
         .map(
           (item) =>
-            `('${item.id}', '${item.name}', '${item.price}', '${item.category}')`
+            `('${item.id}', '${item.name}', '${item.price}', '${item.description}', '${item.image}', '${item.category}')`
         )
         .join(', ')}`
     );

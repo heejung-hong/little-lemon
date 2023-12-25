@@ -27,7 +27,7 @@ export function getSectionListData(data) {
   }, {});
   const sectionListData = Object.entries(dataByCategory).map(([key, item]) => {
     return {
-      name: key,
+      title: key,
       data: item,
     };
   });

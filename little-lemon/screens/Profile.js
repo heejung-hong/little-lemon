@@ -72,7 +72,7 @@ export default function Profile({ navigation }) {
   }, [userPhoneNum]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View>
         <Text style={styles.headerText}>Personal information</Text>
       </View>
@@ -139,27 +139,26 @@ export default function Profile({ navigation }) {
       <Notifications />
       <View style={{ alignItems: 'center', justifyContent: 'space-evenly', margin: 10 }}>
         <Pressable 
-          style={styles.logOutBtn}
-          onPress={() => navigation.navigate('Home')} 
+          style={styles.logOutBtn} 
         >
-          <Text style={styles.yellowBtnText}>Home</Text>
+          <Text style={styles.yellowBtnText}>Log Out</Text>
         </Pressable>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', margin: 5 }}>
-        <Pressable style={styles.discardBtn}>
+        <Pressable 
+          onPress={() => navigation.navigate('Home')}
+          style={styles.discardBtn}
+          >
           <Text style={styles.whiteBtnText}>Discard changes</Text>
         </Pressable>
         <Pressable 
-          onPress={() => {
-            setUserLastName([...userLastName, lastNameInput]);
-            setLastNameInput('');
-          }}
+          onPress={() => navigation.navigate('Home')}
           style={styles.saveBtn}
         >
           <Text style={styles.greenBtnText}>Save changes</Text>
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
