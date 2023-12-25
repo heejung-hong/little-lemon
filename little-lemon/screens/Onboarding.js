@@ -35,7 +35,7 @@ export default function Onboarding({ navigation, route, props }) {
   }, [inputFirstName]);
 
   return (
-    <View style={styles.container}>      
+    <SafeAreaView style={styles.container}>      
       <Image 
         style={styles.logo} 
         source={require('../assets/Logo.png')}
@@ -72,7 +72,7 @@ export default function Onboarding({ navigation, route, props }) {
           Next
         </Text>
       </Button>     
-    </View>
+    </SafeAreaView>
   )
 }
 
