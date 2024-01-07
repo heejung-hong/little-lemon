@@ -17,6 +17,7 @@ export function getSectionListData(data) {
       id: curr.id,
       name: curr.name,
       price: curr.price,
+      description: curr.description,
     };
     if (!Array.isArray(acc[curr.category])) {
       acc[curr.category] = [menuItem];

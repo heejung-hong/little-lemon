@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { 
-  ActivityIndicator, 
   Alert, 
-  // FlatList, 
   Image, 
   Pressable, 
   SafeAreaView,
@@ -24,49 +22,27 @@ import {
 import Filters from '../components/Filters';
 import { getSectionListData, useUpdateEffect } from '../utils/utils';
 
-const API_URL = 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json';
+const API_URL = 'https://raw.githubusercontent.com/heejung-hong/little-lemon/main/little-lemon/menu.json';
 const sections = ['Starters', 'Main', 'Deserts']
 
-const Item = ({ name, price, description, image }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{name}</Text>
-    <Text style={styles.title}>{description}</Text>
-    <Text style={styles.title}>${price}</Text>
-    <Image 
-      source={{
-        uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`,
-      }}
-    />
+const Item = ({ name, price, description, image, png }) => (
+  <View style={styles.dish}>
+    <View>
+      <Text style={styles.dishName}>{name}</Text>
+      <Text style={styles.dishDescription}>{description}</Text>
+      <Text style={styles.dishPrice}>${price}</Text>
+    </View>
+    <View>
+      <Image source={{ uri: `https://github.com/heejung-hong/little-lemon/blob/main/little-lemon/assets/${image}?raw=true` }} style={styles.image} />
+    </View>    
   </View>
 );
 
 export default function HomeScreen({ navigation }) {
-  // const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [searchBarText, setSearchBarText] = useState('');
   const [query, setQuery] = useState('');
   const [filterSelections, setFilterSelections] = useState(sections.map(() => false));
-
-  // const getMenu = async () => {
-  //   try {
-  //     // fetch method are Get requests
-  //     // in React Native, fetch can make POST request to send data to server
-  //     const response = await fetch(
-  //       'https://raw.githubusercontent.com/heejung-hong/little-lemon/main/little-lemon/menu.json'
-  //     );
-  //     const json = await response.json();
-  //     setData(json.menu);
-  //     console.log(setData)
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getMenu();
-  // }, []);
 
   useEffect(() => {
     (async () => {
@@ -183,64 +159,24 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.delivery}>ORDER FOR DELIVERY!</Text>
       </View>
       <View style={styles.category}>
-        <Pressable style={styles.categoryBtn}>
-          <Text style={styles.categoryText}>Starters</Text>
-        </Pressable>
-        <Pressable style={styles.categoryBtn}>
-          <Text style={styles.categoryText}>Mains</Text>
-        </Pressable>
-        <Pressable style={styles.categoryBtn}>
-          <Text style={styles.categoryText}>Desserts</Text>
-        </Pressable>
-        <Pressable style={styles.categoryBtn}>
-          <Text style={styles.categoryText}>Drinks</Text>
-        </Pressable>
-      </View>
-      <View>       
         <Filters
           selections={filterSelections}
           onChange={handleFiltersChange}
           sections={sections}
         />
+      </View>
+      <View>
         <SectionList
-          style={styles.sectionList}
           sections={data}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <Item 
-              name={item.name} 
-              price={item.price}
-              description={item.description}
-              image={item.image} 
-            />
+            <Item name={item.name} description={item.description} price={item.price} image={item.image} />
           )}
-          renderSectionHeader={({ section: { name } }) => (
-            <Text style={styles.header}>{name}</Text>
+          renderSectionHeader={({ section: { title } }) => (
+            <Text>{title}</Text>
           )}
         />
       </View>
-      {/* <View>
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.dish}>
-                <View>
-                  <Text style={styles.dishName}>{item.name}</Text>
-                  <Text style={styles.dishDescription}>{item.description}</Text>
-                  <Text style={styles.dishPrice}>{'$' + item.price}</Text>
-                </View>
-                <View>
-                  <Image source={{ uri: item.image }} style={styles.image} />
-                </View>
-              </View>
-            )}
-          />
-        )}
-      </View> */}
     </SafeAreaView>
   )
 }

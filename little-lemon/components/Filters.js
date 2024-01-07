@@ -8,17 +8,22 @@ const Filters = ({ onChange, selections, sections }) => {
           onPress={() => {
             onChange(index);
           }}
-          style={{
-            flex: 1 / sections.length,
-            justifyContent: 'center',
+          style={{           
+            backgroundColor: selections[index] ? '#EE9972' : 'lightgrey',
+            marginHorizontal: 15,         
+            padding: 10,
+            height: 35,
+            width: 90,
+            borderRadius: 10,
             alignItems: 'center',
-            padding: 16,
-            backgroundColor: selections[index] ? '#EE9972' : '#495E57',
-            borderWidth: 1,
-            borderColor: 'white',
+            justifyContent: 'center'
           }}>
           <View>
-            <Text style={{ color: selections[index] ? 'black' : 'white' }}>
+            <Text style={{ 
+              color: selections[index] ? 'white' : '#2F4F4F',
+              fontSize: 14,
+              fontWeight: 'bold',
+            }}>
               {section}
             </Text>
           </View>
@@ -30,10 +35,9 @@ const Filters = ({ onChange, selections, sections }) => {
 
 const styles = StyleSheet.create({
   filtersContainer: {
-    backgroundColor: 'green',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
+    flexDirection: 'row', 
+    justifyContent: 'space-evenly', 
+    marginBottom: 20
   },
 });
 
