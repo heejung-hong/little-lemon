@@ -13,11 +13,13 @@ export function getSectionListData(data) {
   // The data property should contain an array of menu items. 
   // Each item has the following properties: "id", "title" and "price"
   const dataByCategory = data.reduce((acc, curr) => {
+    // acc: accumulator, curr: currently
     const menuItem = {
       id: curr.id,
       name: curr.name,
       price: curr.price,
       description: curr.description,
+      image: curr.image,
     };
     if (!Array.isArray(acc[curr.category])) {
       acc[curr.category] = [menuItem];
@@ -28,6 +30,7 @@ export function getSectionListData(data) {
   }, {});
   const sectionListData = Object.entries(dataByCategory).map(([key, item]) => {
     return {
+      // title is from category
       title: key,
       data: item,
     };

@@ -8,7 +8,8 @@ const Filters = ({ onChange, selections, sections }) => {
           onPress={() => {
             onChange(index);
           }}
-          style={{           
+          style={{       
+            flex: 1 / sections.length,   
             backgroundColor: selections[index] ? '#EE9972' : 'lightgrey',
             marginHorizontal: 15,         
             padding: 10,
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   filtersContainer: {
     flexDirection: 'row', 
     justifyContent: 'space-evenly', 
-    marginBottom: 20
+    marginVertical: 10
   },
 });
 
