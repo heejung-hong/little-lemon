@@ -7,7 +7,7 @@ export async function createTable() {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          'create table if not exists menuitems (id integer primary key not null, uuid text, name text, price text, description text, png text, category text);'
+          'create table if not exists menuitems (id integer primary key not null, uuid text, name text, price text, description text, image text, category text);'
         );
       },
       reject,
@@ -32,10 +32,10 @@ export async function getMenuItems() {
 export function saveMenuItems(menuItems) {
   db.transaction((tx) => {
     tx.executeSql(
-      `INSERT INTO menuitems (uuid, name, price, description, png, category) VALUES ${menuItems
+      `INSERT INTO menuitems (uuid, name, price, description, image, category) VALUES ${menuItems
         .map(
           (item) =>
-            `('${item.id}', '${item.name}', '${item.price}', '${item.description}', '${item.png}', '${item.category}')`
+            `('${item.id}', '${item.name}', '${item.price}', '${item.description}', '${item.image}', '${item.category}')`
         )
         .join(', ')}`
     );

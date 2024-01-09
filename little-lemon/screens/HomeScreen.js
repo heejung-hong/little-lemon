@@ -11,6 +11,7 @@ import {
   Text, 
   View 
 } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { Searchbar } from 'react-native-paper';
 import debounce from 'lodash.debounce';
 import { 
@@ -25,14 +26,14 @@ import { getSectionListData, useUpdateEffect } from '../utils/utils';
 const API_URL = 'https://raw.githubusercontent.com/heejung-hong/little-lemon/main/little-lemon/menu.json';
 const sections = ['Starters', 'Main', 'Deserts']
 
-const Item = ({ name, price, description, image, png }) => (
+const Item = ({ name, price, description, image }) => (
   <View style={styles.dish}>
     <View>
       <Text style={styles.dishName}>{name}</Text>
       <Text style={styles.dishDescription}>{description}</Text>
       <Text style={styles.dishPrice}>${price}</Text>
     </View>
-    <View>
+    <View style={{ border: 'black' }}>
       <Image source={{ uri: `https://github.com/heejung-hong/little-lemon/blob/main/little-lemon/assets/${image}?raw=true` }} style={styles.image} />
     </View>    
   </View>
@@ -63,7 +64,7 @@ export default function HomeScreen({ navigation }) {
           // Storing into database
           saveMenuItems(menuItems);
         }
-
+        console.log(menuItems)
         const sectionListData = getSectionListData(menuItems);
         setData(sectionListData);
       } catch (e) {
@@ -73,6 +74,7 @@ export default function HomeScreen({ navigation }) {
     })();
   }, []);
 
+  // custom useEffect hook that runs on updates
   useUpdateEffect(() => {
     (async () => {
       const activeCategories = sections.filter((s, i) => {
@@ -114,69 +116,66 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-evenly' }}>
+        <View style={{ height: 80, width: 50 }}></View>
         <Image 
           style={styles.logo} 
           source={require('../assets/Logo.png')}
           accessible={true}
           accessibilityLabel={'Little Lemon logo and title'}
         />
-        <Pressable onPress={() => navigation.navigate('Profile')} >
-        <View style={{ width: 65, height: 65, borderRadius: 50, borderColor: '#2F4F4F', borderWidth: 1, justifyContent: 'flex-end' }}>
-        <Text>Profile</Text>
-        </View>
+        <Pressable 
+          onPress={() => navigation.navigate('Profile')} 
+          style={{ height: 80, width: 50, alignItems: 'center', justifyContent: 'center' }}
+        >
+          <FontAwesome5 name="user-circle" size={40} color="#2F4F4F" />
         </Pressable>
       </View>      
       <View style={{ backgroundColor: '#2F4F4F' }}>
-        <Text         
-        style={styles.headerText}>Little Lemon
-        </Text>
-        <View style={{ flexDirection: 'row' }}>
-          <View>
-            <Text style={styles.chicago}>Chicago</Text>
-            <Text style={styles.summary}>
-              We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.
-            </Text>
+        <View>
+          <Text         
+          style={styles.headerText}>Little Lemon
+          </Text>
+          <View style={{ flexDirection: 'row' }}>
+            <View>
+              <Text style={styles.chicago}>Chicago</Text>
+              <Text style={styles.summary}>
+                We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.
+              </Text>
+            </View>
+            <View>
+              <Image source={require('../assets/HeroImage.png')} style={styles.hero} />
+            </View>
           </View>
-          <View>
-            <Image source={require('../assets/HeroImage.png')} style={styles.hero} />
-          </View>
+        </View>
+        <View>
+          <Searchbar
+            placeholder="Search"
+            placeholderTextColor="#2F4F4F"
+            onChangeText={handleSearchChange}
+            value={searchBarText}
+            style={styles.searchBar}
+            iconColor="#2F4F4F"
+            inputStyle={{ color: '#2F4F4F' }}
+            elevation={0}
+          />
         </View>          
-      </View>
-      <View>
-        <Searchbar
-          placeholder="Search"
-          placeholderTextColor="white"
-          onChangeText={handleSearchChange}
-          value={searchBarText}
-          style={styles.searchBar}
-          iconColor="white"
-          inputStyle={{ color: 'white' }}
-          elevation={0}
-        />
-      </View>
-      <View>
-        <Text style={styles.delivery}>ORDER FOR DELIVERY!</Text>
-      </View>
-      <View style={styles.category}>
-        <Filters
-          selections={filterSelections}
-          onChange={handleFiltersChange}
-          sections={sections}
-        />
-      </View>
-      <View>
-        <SectionList
-          sections={data}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Item name={item.name} description={item.description} price={item.price} image={item.image} />
-          )}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text>{title}</Text>
-          )}
-        />
-      </View>
+      </View>      
+      <Filters
+        selections={filterSelections}
+        onChange={handleFiltersChange}
+        sections={sections}
+      />      
+      <SectionList
+        sections={data}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <Item name={item.name} description={item.description} price={item.price} image={item.image} />
+        )}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={styles.header}>{title}</Text>
+        )}
+      />      
     </SafeAreaView>
   )
 }
@@ -184,13 +183,15 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
     paddingTop: StatusBar.currentHeight,
   },
   logo: {
-    height: 100,
+    height: 80,
     width: 200,
     resizeMode: 'contain',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerText: {
     fontSize: 45,
@@ -216,43 +217,19 @@ const styles = StyleSheet.create({
     borderRadius: 25, 
     margin: 7
   },
-  sectionList: {
-    paddingHorizontal: 16,
-  },
   searchBar: {
-    marginBottom: 24,
-    backgroundColor: '#495E57',
+    marginBottom: 14,
+    marginHorizontal: 15,
+    backgroundColor: 'white',
     shadowRadius: 0,
     shadowOpacity: 0,
+    height: 50,
   },
   item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-  },
-  header: {
-    fontSize: 24,
-    paddingVertical: 8,
-    color: '#FBDABB',
-    backgroundColor: '#495E57',
-  },
-  title: {
-    fontSize: 20,
-    color: 'white',
-  },
-  delivery: {
-    color: 'black', 
-    fontSize: 18, 
-    fontWeight: 'bold', 
-    marginLeft: 15, 
-    marginTop: 20, 
-    marginBottom: 10
-  },
-  category: {
-    flexDirection: 'row', 
-    justifyContent: 'space-evenly', 
-    marginBottom: 20
   },
   categoryBtn: {
     backgroundColor: 'lightgrey',
@@ -266,6 +243,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#2F4F4F',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    paddingVertical: 8,
+    marginLeft: 15,
+    color: '#F4CE14',
+    backgroundColor: 'white'
   },
   dish: {
     flexDirection: 'row',
@@ -297,6 +282,8 @@ const styles = StyleSheet.create({
   image: {
     width: 100, 
     height: 100,
-    margin: 15
+    margin: 15,
+    backgroundColor: '#2F4F4F',
+    borderRadius: 10
   }
 })
