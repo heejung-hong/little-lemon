@@ -64,7 +64,7 @@ export default function HomeScreen({ navigation }) {
           // Storing into database
           saveMenuItems(menuItems);
         }
-        console.log(menuItems)
+        // console.log(menuItems)
         const sectionListData = getSectionListData(menuItems);
         setData(sectionListData);
       } catch (e) {
@@ -283,7 +283,6 @@ const styles = StyleSheet.create({
     width: 100, 
     height: 100,
     margin: 15,
-    backgroundColor: '#2F4F4F',
     borderRadius: 10
   }
 })
