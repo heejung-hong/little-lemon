@@ -26,7 +26,11 @@ export default function Profile({ navigation }) {
     }
   }
 
-
+  const removeImage = () => {
+    if (setImage()) {
+      return setImage === null;
+    }    
+  }
 
   const [lastNameInput, setLastNameInput] = useState('');
   const [userLastName, setUserLastName] = useState([]);
@@ -78,16 +82,17 @@ export default function Profile({ navigation }) {
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
         <View style={{ width: 65, height: 65, borderRadius: 50, borderColor: '#2F4F4F', borderWidth: 1 }}>
-          <Button 
-            title='Pic'
-            onPress={pickImage}
-          />
-          {image && <Image source={{ uri: image}} style={{ width: 65, height: 65 }} />}
+          {image && <Image source={{ uri: image}} style={{ width: 65, height: 65, borderRadius: 50 }} />}
         </View>
-        <Pressable style={styles.changeBtn}>
+        <Pressable 
+          title='Pic an image from camera roll'
+          onPress={pickImage}
+          style={styles.changeBtn}>
           <Text style={styles.greenBtnText}>Change</Text>
         </Pressable>
-        <Pressable style={styles.removeBtn}>
+        <Pressable 
+          onPress={removeImage}
+          style={styles.removeBtn}>
           <Text style={styles.whiteBtnText}>Remove</Text>
         </Pressable>
       </View>
